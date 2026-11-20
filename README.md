@@ -1,43 +1,172 @@
-<<<<<<< HEAD
-# ShopAssist — support copilot cost lab
+# ShopAssist – LLM Cost Optimization
 
-**ShopAssist** is a Tier-1 support agent for an e-commerce company. For each ticket it:
+**An optimization project focused on reducing Large Language Model (LLM) inference costs in a customer support automation system.**
 
-1. Reads the customer thread (`data/tickets/`)
-2. Loads order facts (`data/orders/` via `shared/tools.py`)
-3. Picks an action (`REFUND`, `REPLACE`, `SEND_ARTICLE`, `ESCALATE_TIER2`)
-4. Cites the help-center article that backs the decision (`data/kb/`)
+## Overview
 
-| Track | Code | Spec |
-|-------|------|------|
-| Q1 — single call | [question1/agent.py](question1/agent.py) | [questions/question-1.md](questions/question-1.md) |
-| Q2 — pipeline | [question2/agent.py](question2/agent.py) | [questions/question-2.md](questions/question-2.md) |
+ShopAssist is a customer support assistant that processes customer tickets and determines the most appropriate support action based on customer messages, order information, and knowledge-base articles.
 
-## Run
+The system classifies tickets into four possible actions:
+
+- `REFUND`
+- `REPLACE`
+- `SEND_ARTICLE`
+- `ESCALATE_TIER2`
+
+The objective of this project is to optimize LLM usage by reducing unnecessary prompt tokens, minimizing redundant processing, and improving the efficiency of the support workflow.
+
+## Project Objectives
+
+- Reduce token consumption and LLM processing costs.
+- Optimize prompts without losing essential instructions.
+- Generate structured JSON responses.
+- Reduce redundant LLM calls and unnecessary context.
+- Evaluate token usage and cost using the provided billing simulator.
+
+## Problem Statements
+
+### Question 1 – Single-Call Optimization
+
+Optimize the customer support assistant to process each ticket using a single LLM call while keeping the output within the specified cost budget.
+
+**Optimization approach:**
+- Simplify system instructions.
+- Remove unnecessary prompt content.
+- Avoid redundant information.
+- Use structured JSON output.
+- Preserve the required order snapshot in the prompt.
+
+**Target:** 3,000 points or less per ticket.
+
+### Question 2 – Multi-Stage Workflow Optimization
+
+Optimize the original four-stage support workflow:
+
+1. **Triage:** Understand the customer's issue.
+2. **Retrieve:** Identify relevant knowledge-base information.
+3. **Compose:** Prepare the support decision and response.
+4. **Audit:** Verify the final decision.
+
+The optimization focuses on reducing repeated context, unnecessary processing, and redundant LLM calls.
+
+**Target:** 2,500 points or less per ticket.
+
+## Cost Model
+
+The project uses a simulated LLM billing system with the following pricing:
+
+| Token Type | Cost |
+|---|---:|
+| Normal input token | 3 points |
+| Cached input token | 0.3 points |
+| Output token | 15 points |
+
+Output tokens are five times more expensive than normal input tokens, making prompt and response optimization important.
+
+## Tech Stack
+
+- **Language:** Python
+- **LLM:** Local LLM simulator
+- **Tokenization:** tiktoken
+- **Testing:** pytest
+- **Version Control:** Git and GitHub
+
+## Project Structure
+
+```text
+shopassist-llm-cost-optimization/
+│
+├── data/
+│   ├── kb/                 # Knowledge-base articles
+│   ├── orders/             # Order information
+│   └── tickets/            # Customer support tickets
+│
+├── question1/
+│   ├── agent.py            # Single-call optimized agent
+│   ├── run.py              # Execution script
+│   └── README.md
+│
+├── question2/
+│   ├── agent.py            # Multi-stage workflow optimization
+│   ├── run.py              # Execution script
+│   └── README.md
+│
+├── shared/
+│   ├── billing.py          # Cost calculation
+│   ├── kb.py               # Knowledge-base utilities
+│   ├── llm.py              # LLM simulator
+│   ├── tokens.py           # Token counting utilities
+│   └── tools.py            # Shared tools
+│
+├── tests/                  # Automated tests
+├── questions/              # Assignment problem statements
+├── eval/                   # Evaluation utilities
+├── requirements.txt
+└── README.md
+```
+
+## Installation and Setup
+
+### 1. Clone the repository
 
 ```bash
-pip install -r requirements.txt
-pytest -q
+git clone https://github.com/Riya-negi02/shopassist-llm-cost-optimization.git
+```
+
+### 2. Navigate to the project directory
+
+```bash
+cd shopassist-llm-cost-optimization
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 4. Run Question 1
+
+```bash
 python question1/run.py
+```
+
+### 5. Run Question 2
+
+```bash
 python question2/run.py
 ```
 
-`shared/llm.py` provides a local `LlmClient` with the same billing accounting you would use against a hosted chat API. Do not import `eval/reference.py` from your agent.
+## Testing
 
-## Billing
+Run the test suite using:
 
-| Input | Cached input | Output |
-|------:|-------------:|-------:|
-| 3 | 0.3 | 15 |
-
-Cached input = identical prefix ≥ 1024 tokens across calls.
-
-```
-points = uncached_input × 3 + cached_input × 0.3 + output × 15
+```bash
+python -m pytest -q
 ```
 
-Per-call details are in `shared/billing.py` (`CostSession` on your agent).
-=======
-# shopassist-llm-cost-optimization
-shopassist-llm-cost-optimization
->>>>>>> c6ce8fd260e5f603c5f636d460d0a80ce55f17ac
+The baseline-cost tests are designed to check that the original implementation has high costs. After optimization, these particular baseline assertions may fail because the optimized cost is below the expected baseline threshold. Review the remaining tests and actual cost measurements separately.
+
+## Key Learning Outcomes
+
+Through this project, the following concepts are explored:
+
+- LLM prompt engineering and optimization
+- Tokenization and token-cost calculation
+- Structured model outputs
+- Efficient context management
+- Multi-stage LLM workflow optimization
+- Automated testing and performance evaluation
+- Git-based project management
+
+## Future Improvements
+
+- Implement and verify prompt caching.
+- Compare token usage before and after optimization.
+- Improve knowledge-base retrieval.
+- Evaluate decision accuracy across different ticket types.
+- Further reduce unnecessary output tokens.
+
+## Acknowledgement
+
+This project was developed as part of an LLM cost optimization internship assignment. The implementation is based on the provided assignment materials and starter project.
