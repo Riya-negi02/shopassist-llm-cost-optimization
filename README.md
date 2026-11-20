@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ShopAssist — support copilot cost lab
 
 **ShopAssist** is a Tier-1 support agent for an e-commerce company. For each ticket it:
@@ -36,3 +37,7 @@ points = uncached_input × 3 + cached_input × 0.3 + output × 15
 ```
 
 Per-call details are in `shared/billing.py` (`CostSession` on your agent).
+=======
+# shopassist-llm-cost-optimization
+shopassist-llm-cost-optimization
+>>>>>>> c6ce8fd260e5f603c5f636d460d0a80ce55f17ac
